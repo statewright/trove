@@ -1,0 +1,52 @@
+version: '3'
+
+vars:
+  BINARY: trove
+  VERSION:
+    sh: git describe --tags --always --dirty 2>/dev/null || echo "dev"
+
+tasks:
+  build:
+    desc: Build the trove binary
+    cmds:
+      - go build -ldflags="-s -w" -o {{.BINARY}} ./cmd/trove
+
+  test:
+    desc: Run all tests
+    cmds:
+      - go test -v -race ./...
+
+  test-unit:
+    desc: Run unit tests only (no PG required)
+    cmds:
+      - go test -v -race -short ./...
+
+  lint:
+    desc: Run linter
+    cmds:
+      - go vet ./...
+
+  docker-build:
+    desc: Build Docker image
+    cmds:
+      - docker build -t trove:{{.VERSION}} .
+
+  docker-up:
+    desc: Start with Docker Compose
+    cmds:
+      - docker compose up --build
+
+  docker-down:
+    desc: Stop Docker Compose
+    cmds:
+      - docker compose down
+
+  clean:
+    desc: Remove build artifacts
+    cmds:
+      - rm -f {{.BINARY}}
+
+  tidy:
+    desc: Tidy go modules
+    cmds:
+      - go mod tidy

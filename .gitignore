@@ -1,0 +1,7 @@
+trove
+data/
+.env
+.env.*
+.DS_Store
+*.db
+*.log

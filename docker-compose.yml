@@ -1,0 +1,32 @@
+services:
+  trove:
+    build: .
+    ports:
+      - "9000:9000"
+    environment:
+      TROVE_LISTEN: ":9000"
+      TROVE_POSTGRES_URL: postgres://trove:trove@postgres:5432/trove?sslmode=disable
+      TROVE_DATA_DIR: /data
+    volumes:
+      - trove-data:/data
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: trove
+      POSTGRES_PASSWORD: trove
+      POSTGRES_DB: trove
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U trove"]
+      interval: 2s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  trove-data:
+  pg-data:
