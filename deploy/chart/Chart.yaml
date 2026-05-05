@@ -1,0 +1,6 @@
+apiVersion: v2
+name: trove
+description: Lightweight S3-compatible object store
+type: application
+version: 0.1.0
+appVersion: "0.1.0"

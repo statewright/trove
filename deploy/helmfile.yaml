@@ -1,0 +1,25 @@
+helmDefaults:
+  wait: true
+  timeout: 300
+
+releases:
+  - name: trove
+    namespace: trove
+    chart: ./chart
+    createNamespace: true
+    values:
+      - image:
+          repository: ghcr.io/statewright/trove
+          tag: latest
+        replicaCount: 1
+        persistence:
+          enabled: true
+          size: 20Gi
+          # storageClass: cortex-nfs  # uncomment for RWX shared storage
+          accessModes:
+            - ReadWriteOnce
+        postgres:
+          existingSecret: trove-secrets
+          existingSecretKey: TROVE_POSTGRES_URL
+        rootCredentials:
+          existingSecret: trove-secrets

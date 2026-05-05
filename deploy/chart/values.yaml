@@ -1,0 +1,46 @@
+replicaCount: 1
+
+image:
+  repository: ghcr.io/statewright/trove
+  tag: latest
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+
+service:
+  type: ClusterIP
+  port: 9000
+
+persistence:
+  enabled: true
+  storageClass: ""
+  size: 10Gi
+  accessModes:
+    - ReadWriteOnce
+
+env:
+  TROVE_LISTEN: ":9000"
+  TROVE_DATA_DIR: "/data"
+
+# PostgreSQL connection string — provide via env or existingSecret
+postgres:
+  url: ""
+  existingSecret: ""
+  existingSecretKey: "TROVE_POSTGRES_URL"
+
+# Root access credentials — auto-generated on first run if not set
+rootCredentials:
+  accessKey: ""
+  secretKey: ""
+  existingSecret: ""
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 64Mi
+  limits:
+    memory: 256Mi
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
